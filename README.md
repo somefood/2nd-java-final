@@ -1,6 +1,6 @@
 # STARTERS 취업부트캠프 최종평가(Java)
 
-### 평가 안내
+### 평가 안내 ([노션 링크](https://www.notion.so/flearnerhq/STARTERS-Java-8b1d1e267df64ff6921e24f966e2ea0e))
 
 ---
 
