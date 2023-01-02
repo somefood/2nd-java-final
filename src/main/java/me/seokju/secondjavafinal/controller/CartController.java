@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ public class CartController {
     @Transactional(readOnly = true)
     @GetMapping
     public ResponseEntity<List<CartResponseDto>> getMyCart(@RequestBody CartRequestDto cartRequestDto) {
+        checkIfCartAvailableOrElseThrow();
         Long memberId = cartRequestDto.getMemberId();
         List<CartResponseDto> result = cartService.getMyCart(memberId);
         return ResponseEntity.ok(result);
@@ -45,6 +47,7 @@ public class CartController {
     // 사전 신청자가 강의의 정원을 넘은 경우 강의 신청이 이루어지지 않습니다.
     @PostMapping
     public void applyAdvanceInCart(@RequestBody CartRequestDto cartRequestDto) {
+        checkIfCartAvailableOrElseThrow();
         Long memberId = cartRequestDto.getMemberId();
         Long lectureId = cartRequestDto.getLectureId();
         cartService.applyAdvanceInCart(memberId, lectureId);
@@ -52,6 +55,7 @@ public class CartController {
 
     @PostMapping("/re-apply")
     public ResponseEntity<Void> reApplyLecture(@RequestBody LectureRequestDto requestDto) {
+        checkIfCartAvailableOrElseThrow();
         Long memberId = requestDto.getMemberId();
         Long lectureId = requestDto.getLectureId();
 
@@ -61,8 +65,20 @@ public class CartController {
 
     @DeleteMapping
     public void cancelCart(@RequestBody CartRequestDto cartRequestDto) {
+        checkIfCartAvailableOrElseThrow();
         Long memberId = cartRequestDto.getMemberId();
         Long lectureId = cartRequestDto.getLectureId();
         cartService.cancelCart(memberId, lectureId);
+    }
+
+    // 강의 장바구니 기간은 2023년 1월 9일 오후 2시부터 1월 10일 오후 6시까지
+    private void checkIfCartAvailableOrElseThrow() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDate = LocalDateTime.of(2023, 1, 9, 14, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 1, 9, 18, 0, 0);
+        if (now.isAfter(startDate) && now.isBefore(endDate)) {
+            return;
+        }
+        throw new RuntimeException("장바구니 기능은 2023년 1월 9일 오후 2시부터 1월 10일 오후 18시에만 사용가능합니다.");
     }
 }
