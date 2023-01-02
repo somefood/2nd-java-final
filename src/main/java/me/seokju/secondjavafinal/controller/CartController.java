@@ -75,7 +75,7 @@ public class CartController {
     private void checkIfCartAvailableOrElseThrow() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDate = LocalDateTime.of(2023, 1, 9, 14, 0, 0);
-        LocalDateTime endDate = LocalDateTime.of(2023, 1, 9, 18, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 1, 10, 18, 0, 0);
         if (now.isAfter(startDate) && now.isBefore(endDate)) {
             return;
         }
